@@ -1,5 +1,5 @@
 const request = require("request");
-const q = require("Q");
+const q = require("q");
 
 module.exports = function(){
     var utils = {
