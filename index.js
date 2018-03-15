@@ -1,3 +1,3 @@
-const service = require("./services");
+const helpers = require("./helpers");
 
-module.exports = service;
+module.exports = helpers;

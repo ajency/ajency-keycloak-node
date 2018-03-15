@@ -1,0 +1,11 @@
+{
+    "realm": "GoomoDemo",
+    "auth-server-url": "http://keycloakserver.ajency.in/auth",
+    "ssl-required": "external",
+    "resource": "local-lms-test",
+    "credentials": {
+      "secret": "f8cb9330-cc57-4a20-b840-ebc9366848de"
+    },
+    "confidential-port": 0,
+    "policy-enforcer": {}
+  }
