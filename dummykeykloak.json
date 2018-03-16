@@ -1,11 +1,12 @@
 {
-    "realm": "GoomoDemo",
-    "auth-server-url": "http://keycloakserver.ajency.in/auth",
-    "ssl-required": "external",
-    "resource": "local-lms-test",
-    "credentials": {
-      "secret": "f8cb9330-cc57-4a20-b840-ebc9366848de"
-    },
-    "confidential-port": 0,
-    "policy-enforcer": {}
-  }
+  "realm": "GoomoTest",
+  "auth-server-url": "http://keycloakserver.ajency.in/auth",
+  "ssl-required": "external",
+  "resource": "LMS-backend-Node",
+  "credentials": {
+    "secret": "9bb13a91-5a3e-4e63-86b3-ac512bcca9f5"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

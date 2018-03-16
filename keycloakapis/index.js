@@ -1,11 +1,10 @@
 const utils = require("../utils")();
-const config = require("../config");
 const q = utils.q;
 
 module.exports = {
     entitlementsApi(token, entitlement){
-        let deferred = q.deferred();
-
+        let deferred = q.defer();
+        // console.log("configoptions", global.config );
         let url = config['auth-server-url'] + '/realms/' + config['realm'] + '/authz/entitlement/' + config.resource;
         let headers = {
             'Content-Type': 'application/json',

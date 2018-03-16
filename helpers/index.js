@@ -1,6 +1,6 @@
 const utils = require("../utils")();
 const keycloakapis = require("../keycloakapis");
-var config = require("../config.js");
+global.config = require("../config.js");
 const q = utils.q;
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
                 return false;
             }
 
-            config = config;
+            global.config = config;
             return true;
         }
         else{
@@ -31,21 +31,16 @@ module.exports = {
     },
     isUserAuthorised(usertoken, permissions){
         // TBD format the permissions passed in by user;
-        keycloakapis.entitlementsApi(usertoken, permissions);
-        console.log("authentication successful!");
-    },
-    makeGETRequest(url){
         let deferred = q.defer();
-        utils.makeRequest(url)
-                .then(function(res){
-                    console.log("suuceesss load");
-                    deferred.resolve(res);
-                })
-                .catch(function(err){
-                    console.warn("failure",err);
-                    deferred.reject(err);
-                });
-        
+        keycloakapis.entitlementsApi(usertoken, permissions)
+                    .then(function(result){
+                        // console.log("isAuthorized: ", result);
+                        deferred.resolve(true);
+                    })
+                    .catch(function(err){
+                        console.warn("error: ", err);
+                        deferred.reject(false);
+                    });
         return deferred.promise;
     }
 }
