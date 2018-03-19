@@ -1,6 +1,7 @@
 const utils = require("../utils")();
 const keycloakapis = require("../keycloakapis");
-global.config = require("../config.js");
+global.INSTALLCONFIG = null;
+global.ENDPOINTCONFIG = null;
 const q = utils.q;
 
 module.exports = {
@@ -21,13 +22,33 @@ module.exports = {
                 return false;
             }
 
-            global.config = config;
+            global.INSTALLCONFIG = config;
+            this.getEndpointConfig();
             return true;
         }
         else{
             console.warn("invalid keycloak config");
             return false;
         }
+    },
+    getEndpointConfig(){
+        let deferred = q.defer();
+        if(global.endpointconfig === null){
+            keycloakapis.configurationApi()
+            .then(function(res){
+                console.log("discover endpoints:",res.body);
+                global.ENDPOINTCONFIG = res.body;
+                deferred.resolve(res.body);
+            })
+            .catch(function(err){
+                console.warn("endpoints error:",res.body);
+                deferred.reject(err);
+            });
+        }
+        else{
+            deferred.resolve(global.endpointconfig);
+        }
+        return deferred.promise;
     },
     isUserAuthorised(usertoken, permissions){
         // TBD format the permissions passed in by user;
@@ -42,7 +63,7 @@ module.exports = {
                         deferred.resolve(true);
                     })
                     .catch(function(err){
-                        console.warn("error: ", err);
+                        console.warn("isUserAuthorised error");
                         deferred.reject(false);
                     });
         return deferred.promise;

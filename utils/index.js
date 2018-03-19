@@ -32,11 +32,21 @@ module.exports = function(){
             });
             return deferred.promise;
         };
+
+    var validConfig = function(){
+        if(ENDPOINTCONFIG && INSTALLCONFIG){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     
     var utils = {
         request: request,
         q: q,
-        makeRequest: makeRequest
+        makeRequest: makeRequest,
+        validConfig: validConfig
     };
     
     return utils;
