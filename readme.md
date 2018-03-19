@@ -38,7 +38,7 @@ var authMiddleware = function(){
   }    
 }
 
-app.get("/user-data",authMiddleware(),function(request, response){
+app.get("/user-data", authMiddleware(), function(request, response){
   response.render("user-data");
 });
 

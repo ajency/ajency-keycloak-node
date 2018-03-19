@@ -31,8 +31,12 @@ module.exports = {
     },
     isUserAuthorised(usertoken, permissions){
         // TBD format the permissions passed in by user;
+        let entitlements = {
+            permissions: permissions
+        }
+
         let deferred = q.defer();
-        keycloakapis.entitlementsApi(usertoken, permissions)
+        keycloakapis.entitlementsApi(usertoken, entitlements)
                     .then(function(result){
                         // console.log("isAuthorized: ", result);
                         deferred.resolve(true);
@@ -42,5 +46,16 @@ module.exports = {
                         deferred.reject(false);
                     });
         return deferred.promise;
+    },
+    protect(permissions){ // middleware for protecting resource
+        return function(request, response, next){
+            this.isUserAuthorised(token,permissions)
+                .then(function(result){
+                    next(result);
+                })
+                .catch(function(err){
+                    response.status(401).response({error: err});
+                });
+        }
     }
 }
