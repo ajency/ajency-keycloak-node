@@ -6,7 +6,9 @@ module.exports = {
         let deferred = q.defer();
 
         if(utils.validConfig()){
-            let url = ENDPOINTCONFIG["token_endpoint"];
+            let endpoint = JSON.parse(ENDPOINTCONFIG);
+           
+            let url = endpoint["token_endpoint"];
             let headers={
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -78,9 +80,7 @@ module.exports = {
 
         return deferred.promise;
     },
-    configurationApi(){
-        // http://keycloakhost:keycloakport/auth/realms/demo/.well-known/openid-configuration
-
+    openidConfigurationApi(){
         let deferred = q.defer();
 
         let url = INSTALLCONFIG['auth-server-url'] + '/realms/' + INSTALLCONFIG['realm'] + '/.well-known/openid-configuration';

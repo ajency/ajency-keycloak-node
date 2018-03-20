@@ -33,7 +33,7 @@ module.exports = {
     },
     getEndpointConfig(){
         let deferred = q.defer();
-        if(global.endpointconfig === null){
+        if(global.ENDPOINTCONFIG === null){
             keycloakapis.configurationApi()
             .then(function(res){
                 console.log("discover endpoints:",res.body);
@@ -46,8 +46,21 @@ module.exports = {
             });
         }
         else{
-            deferred.resolve(global.endpointconfig);
+            deferred.resolve(global.ENDPOINTCONFIG);
         }
+        return deferred.promise;
+    },
+    testLogin(user, pass){
+        let deferred = q.defer();
+        keycloakapis.loginApi(user, pass)
+            .then(function(res){
+                console.log("test login success");
+                deferred.resolve(res);
+            })
+            .catch(function(err){
+                console.log("test login error",err);
+                deferred.reject(err);
+            });
         return deferred.promise;
     },
     isUserAuthorised(usertoken, permissions){
@@ -69,7 +82,7 @@ module.exports = {
         return deferred.promise;
     },
     protect(permissions){ // middleware for protecting resource
-        return function(request, response, next){
+        return function(request, response, next){ // get token from auth header
             this.isUserAuthorised(token,permissions)
                 .then(function(result){
                     next(result);
