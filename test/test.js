@@ -9,6 +9,7 @@ var ajencykeycloak = require('../index');
 const keycloakconfig = require("../dummykeykloak.json");
 
 describe('#ajencykeycloak', function() {
+    this.timeout(10000);
     it('should accept keycloak configuration from user', function() {
         var result = ajencykeycloak.init(keycloakconfig);
         expect(result).to.equal(true);
@@ -21,7 +22,7 @@ describe('#ajencykeycloak', function() {
                 // expect(res).to.rejected();
             })
             .finally(done);
-        },500);
+        },5000);
     });
 
     // it('should discovery keycloak specify endpoints on second pass', function(done){
@@ -41,7 +42,7 @@ describe('#ajencykeycloak', function() {
     // });
 
     it('should allow for user login', function(done){
-        ajencykeycloak.testLogin("cyrus@ajency.in","Ajency#123")
+        ajencykeycloak.login("cyrus@ajency.in","Ajency#123")
             .then(function(res){
 
             })

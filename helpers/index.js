@@ -34,11 +34,11 @@ module.exports = {
     getEndpointConfig(){
         let deferred = q.defer();
         if(global.ENDPOINTCONFIG === null){
-            keycloakapis.configurationApi()
+            keycloakapis.openidConfigurationApi()
             .then(function(res){
                 console.log("discover endpoints:",res.body);
-                global.ENDPOINTCONFIG = res.body;
-                deferred.resolve(res.body);
+                global.ENDPOINTCONFIG = JSON.parse(res.body);
+                deferred.resolve(global.ENDPOINTCONFIG);
             })
             .catch(function(err){
                 console.warn("endpoints error:",res.body);
@@ -50,7 +50,7 @@ module.exports = {
         }
         return deferred.promise;
     },
-    testLogin(user, pass){
+    login(user, pass){
         let deferred = q.defer();
         keycloakapis.loginApi(user, pass)
             .then(function(res){

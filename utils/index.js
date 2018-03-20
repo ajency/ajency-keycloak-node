@@ -13,7 +13,7 @@ module.exports = function(){
                 headers: headers || null
             };
 
-            console.log("options", options);
+            // console.log("options", options);
             request(options,function(err, response, body){
                 if(err){
                     deferred.reject(err);
@@ -34,7 +34,6 @@ module.exports = function(){
         };
 
     var validConfig = function(){
-        console.log(ENDPOINTCONFIG, INSTALLCONFIG)
         if(ENDPOINTCONFIG && INSTALLCONFIG){
             return true;
         }

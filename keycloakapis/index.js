@@ -5,10 +5,8 @@ module.exports = {
     loginApi(username, password){
         let deferred = q.defer();
 
-        if(utils.validConfig()){
-            let endpoint = JSON.parse(ENDPOINTCONFIG);
-           
-            let url = endpoint["token_endpoint"];
+        if(utils.validConfig()){           
+            let url = ENDPOINTCONFIG["token_endpoint"];
             let headers={
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
