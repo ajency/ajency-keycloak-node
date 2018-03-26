@@ -6,7 +6,7 @@ const q = utils.q;
 
 module.exports = {
     init(config){
-        if(Object.keys(config).length > 0){
+        if(config && Object.keys(config).length > 0){
             if(!config["auth-server-url"]){
                 console.warn("'auth-server-url' key missing");
                 return false;
@@ -58,7 +58,7 @@ module.exports = {
                 deferred.resolve(res);
             })
             .catch(function(err){
-                console.log("test login error",err);
+                console.log("test login error");
                 deferred.reject(err);
             });
         return deferred.promise;
@@ -83,13 +83,24 @@ module.exports = {
     },
     protect(permissions){ // middleware for protecting resource
         return function(request, response, next){ // get token from auth header
-            this.isUserAuthorised(token,permissions)
+            let tokenpayload = request.headers["Authorizarion"];
+
+            let token = tokenpayload && tokenpayload.indexOf("Bearer ") !== -1 ? tokenpayload.split("Bearer ")[1] : null;
+
+            if(token){
+                this.isUserAuthorised(token,permissions)
                 .then(function(result){
                     next(result);
                 })
                 .catch(function(err){
                     response.status(401).response({error: err});
                 });
+            }
+            else{
+                response.status(400).response({message: "Bad request"});
+            }
+
+
         }
     }
 }
