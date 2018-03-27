@@ -108,7 +108,7 @@ module.exports = {
                     next();
                 })
                 .catch(function(err){
-                    response.status(401).json({error: err});
+                    response.status(401).json({message: "Unauthorized request"});
                 });
             }
             else{
