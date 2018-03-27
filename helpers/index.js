@@ -68,7 +68,7 @@ module.exports = {
         let entitlements = {
             permissions: permissions
         }
-
+        console.log("entitlements:", entitlements);
         let deferred = q.defer();
         keycloakapis.entitlementsApi(usertoken, entitlements)
                     .then(function(result){
@@ -82,22 +82,25 @@ module.exports = {
         return deferred.promise;
     },
     protect(permissions){ // middleware for protecting resource
+        let self = this;
         return function(request, response, next){ // get token from auth header
-            let tokenpayload = request.headers["Authorizarion"];
+            let tokenpayload = request.get("Authorization");
 
             let token = tokenpayload && tokenpayload.indexOf("Bearer ") !== -1 ? tokenpayload.split("Bearer ")[1] : null;
 
+            console.log("Authorization header token", token);
+
             if(token){
-                this.isUserAuthorised(token,permissions)
+                self.isUserAuthorised(token,permissions)
                 .then(function(result){
                     next(result);
                 })
                 .catch(function(err){
-                    response.status(401).response({error: err});
+                    response.status(401).json({error: err});
                 });
             }
             else{
-                response.status(400).response({message: "Bad request"});
+                response.status(400).json({message: "Bad request"});
             }
 
 
