@@ -52,15 +52,21 @@ module.exports = {
     },
     login(user, pass){
         let deferred = q.defer();
-        keycloakapis.loginApi(user, pass)
-            .then(function(res){
-                console.log("test login success");
-                deferred.resolve(res);
+        this.getEndpointConfig()
+            .then(function(){
+                keycloakapis.loginApi(user, pass)
+                .then(function(res){
+                    console.log("test login success");
+                    deferred.resolve(res);
+                })
+                .catch(function(err){
+                    console.log("test login error");
+                    deferred.reject(err);
+                });
             })
-            .catch(function(err){
-                console.log("test login error");
+            .catch(function(er){
                 deferred.reject(err);
-            });
+            })
         return deferred.promise;
     },
     isUserAuthorised(usertoken, permissions, method){
@@ -70,15 +76,21 @@ module.exports = {
         }
         console.log("entitlements:", entitlements);
         let deferred = q.defer();
-        keycloakapis.entitlementsApi(usertoken, entitlements, method)
-                    .then(function(result){
-                        // console.log("isAuthorized: ", result);
-                        deferred.resolve(true);
-                    })
-                    .catch(function(err){
-                        console.warn("isUserAuthorised error");
-                        deferred.reject(false);
-                    });
+        this.getEndpointConfig()
+            .then(function(res){
+                keycloakapis.entitlementsApi(usertoken, entitlements, method)
+                .then(function(result){
+                    // console.log("isAuthorized: ", result);
+                    deferred.resolve(true);
+                })
+                .catch(function(err){
+                    console.warn("isUserAuthorised error");
+                    deferred.reject(false);
+                });
+            })
+            .catch(function(err){
+                deferred.reject(err);
+            })
         return deferred.promise;
     },
     protect(permissions){ // middleware for protecting resource
