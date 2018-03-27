@@ -54,21 +54,35 @@ module.exports = {
                 });
         }
         else{
-            deferred.reject("Missing config fro refresh token");
+            deferred.reject("Missing config for refresh token");
         }
 
         return deferred.promise;
     },
-    entitlementsApi(token, entitlement){
+    entitlementsApi(token, entitlement, method){
         let deferred = q.defer();
-        // console.log("configoptions", global.config );
+
         let url = INSTALLCONFIG['auth-server-url'] + '/realms/' + INSTALLCONFIG['realm'] + '/authz/entitlement/' + INSTALLCONFIG.resource;
-        let headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+
+        let headers, requestpromise;
+        if(method === 'post'){
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            };
+            requestpromise = utils.makeRequest(url, "POST", entitlement, headers, "json");
         }
+        else{
+            headers = {
+                'Authorization': 'Bearer ' + token
+            };
+
+            requestpromise = utils.makeRequest(url, "GET", null, headers, "url-params");
+        }
+
+
         
-        utils.makeRequest(url, "POST", entitlement, headers, "json")
+        requestpromise
             .then(function(res){
                 deferred.resolve(res);
             })

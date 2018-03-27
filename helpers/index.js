@@ -63,14 +63,14 @@ module.exports = {
             });
         return deferred.promise;
     },
-    isUserAuthorised(usertoken, permissions){
+    isUserAuthorised(usertoken, permissions, method){
         // TBD format the permissions passed in by user;
         let entitlements = {
             permissions: permissions
         }
         console.log("entitlements:", entitlements);
         let deferred = q.defer();
-        keycloakapis.entitlementsApi(usertoken, entitlements)
+        keycloakapis.entitlementsApi(usertoken, entitlements, method)
                     .then(function(result){
                         // console.log("isAuthorized: ", result);
                         deferred.resolve(true);
@@ -91,9 +91,9 @@ module.exports = {
             console.log("Authorization header token", token);
 
             if(token){
-                self.isUserAuthorised(token,permissions)
+                self.isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
                 .then(function(result){
-                    next(result);
+                    next();
                 })
                 .catch(function(err){
                     response.status(401).json({error: err});
