@@ -150,7 +150,7 @@ Arguments:
 **Returned value**
 
 ```
-Boolean
+Promise<any>
 ```
 
 **Description**
@@ -161,6 +161,28 @@ Based on the `access-token` & `permissions` passed in checks for authorization o
 
 **Possible failure response: `error`**
 * `false` : "If failure"
+
+
+***
+## getUserInfo
+
+**Syntax**
+
+```
+getUserInfo(<access-token>)
+```
+
+Arguments: 
+* `access-token` : "valid keycloak access token"
+
+**Returned value**
+
+```
+Promise<any>
+```
+
+**Description**
+Based on the `access-token` passed in retrives basic user info.
 
 
 ***
@@ -182,7 +204,7 @@ Express-middleware
 ```
 
 **Description**
-Middleware wrapper for the `isUserAuthorised` method which takes in a permissions array as arguments & access token from the Authorization header from the request.
+Middleware wrapper for the `isUserAuthorised` method which takes in a permissions array as argument & checks the `<access-token>` from the Authorization header from the request.
 
 
 
