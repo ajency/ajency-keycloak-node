@@ -31,6 +31,30 @@ module.exports = {
 
         return deferred.promise;
     },
+    userinfoApi(accesstoken){
+        let deferred = q.defer();
+
+        if(utils.validConfig()){           
+            let url = ENDPOINTCONFIG["userinfo_endpoint"];
+            let headers={
+                "Authorization" : "Bearer " + accesstoken
+            }
+    
+
+            utils.makeRequest(url ,'GET', null , headers,'http-params')
+                .then(function(result){
+                    deferred.resolve(result);
+                })
+                .catch(function(err){
+                    deferred.reject(err);
+                });
+        }
+        else{
+            deferred.reject("Missing config for userinfo");
+        }
+
+        return deferred.promise;
+    },
     refreshtokenApi(refresh_token){
         let deferred = q.defer();
 
