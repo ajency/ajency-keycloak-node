@@ -47,7 +47,8 @@ app.get("/user-data", authMiddleware(), function(request, response){
 2. [getEndpointConfig](#getendpointconfig)
 3. [login](#login)
 4. [isUserAuthorised](#isuserauthorised)
-5. [protect](#protect)
+5. [getUserInfo](#getuserinfo)
+6. [protect](#protect)
 
 
 ***
