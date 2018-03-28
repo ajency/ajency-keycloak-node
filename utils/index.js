@@ -33,12 +33,17 @@ module.exports = function(){
             return deferred.promise;
         };
 
-    var validConfig = function(){
+    var validateConfig = function(callback, deferred, message){
         if(ENDPOINTCONFIG && INSTALLCONFIG){
-            return true;
+            if(typeof callback === 'function'){
+                callback();
+            }
+            else{
+                deferred.reject("invalid callback");
+            }
         }
         else{
-            return false;
+            deferred.reject(message || "invalid config");
         }
     }
     
@@ -46,7 +51,7 @@ module.exports = function(){
         request: request,
         q: q,
         makeRequest: makeRequest,
-        validConfig: validConfig
+        validateConfig: validateConfig
     };
     
     return utils;

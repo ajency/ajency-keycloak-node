@@ -1,11 +1,13 @@
+"use strict";
+
 const utils = require("../utils")();
 const keycloakapis = require("../keycloakapis");
 global.INSTALLCONFIG = null;
 global.ENDPOINTCONFIG = null;
 const q = utils.q;
 
-module.exports = {
-    init(config){
+module.exports = function(config){
+    function init(config){
         if(config && Object.keys(config).length > 0){
             if(!config["auth-server-url"]){
                 console.warn("'auth-server-url' key missing");
@@ -23,20 +25,20 @@ module.exports = {
             }
 
             global.INSTALLCONFIG = config;
-            this.getEndpointConfig();
+            getEndpointConfig();
             return true;
         }
         else{
             console.warn("invalid keycloak config");
             return false;
         }
-    },
-    getEndpointConfig(){
+    }
+
+    function getEndpointConfig(){
         let deferred = q.defer();
         if(global.ENDPOINTCONFIG === null){
             keycloakapis.openidConfigurationApi()
             .then(function(res){
-                console.log("discover endpoints:",res.body);
                 global.ENDPOINTCONFIG = JSON.parse(res.body);
                 deferred.resolve(global.ENDPOINTCONFIG);
             })
@@ -49,14 +51,15 @@ module.exports = {
             deferred.resolve(global.ENDPOINTCONFIG);
         }
         return deferred.promise;
-    },
-    login(user, pass){
+    }
+
+    function login(user, pass){
         let deferred = q.defer();
-        this.getEndpointConfig()
+        getEndpointConfig()
             .then(function(){
                 keycloakapis.loginApi(user, pass)
                 .then(function(res){
-                    console.log("test login success");
+                    // console.log("test login success");
                     deferred.resolve(res);
                 })
                 .catch(function(err){
@@ -68,10 +71,11 @@ module.exports = {
                 deferred.reject(err);
             })
         return deferred.promise;
-    },
-    getUserInfo(accesstoken){
+    }
+
+    function getUserInfo(accesstoken){
         let deferred = q.defer();
-        this.getEndpointConfig()
+        getEndpointConfig()
             .then(function(){
                 keycloakapis.userinfoApi(accesstoken)
                             .then(function(result){
@@ -84,16 +88,17 @@ module.exports = {
             .catch(function(err){
                 deferred.reject(err);
             });
-        deferred.promise;
-    },
-    isUserAuthorised(usertoken, permissions, method){
+        return deferred.promise;
+    }
+
+    function isUserAuthorised(usertoken, permissions, method){
         // TBD format the permissions passed in by user;
         let entitlements = {
             permissions: permissions
         }
         console.log("entitlements:", entitlements);
         let deferred = q.defer();
-        this.getEndpointConfig()
+        getEndpointConfig()
             .then(function(res){
                 keycloakapis.entitlementsApi(usertoken, entitlements, method)
                 .then(function(result){
@@ -109,9 +114,10 @@ module.exports = {
                 deferred.reject(err);
             })
         return deferred.promise;
-    },
-    protect(permissions){ // middleware for protecting resource
-        let self = this;
+    }
+
+    function protect(permissions){ // middleware for protecting resource
+
         return function(request, response, next){ // get token from auth header
             let tokenpayload = request.get("Authorization");
 
@@ -120,7 +126,7 @@ module.exports = {
             console.log("Authorization header token", token);
 
             if(token){
-                self.isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
+                isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
                 .then(function(result){
                     next();
                 })
@@ -134,5 +140,17 @@ module.exports = {
 
 
         }
+    }
+
+    if(config)
+        init(config);
+
+    return {
+        init: init,
+        getEndpointConfig: getEndpointConfig,
+        login: login,
+        getUserInfo: getUserInfo,
+        isUserAuthorised: isUserAuthorised,
+        protect: protect
     }
 }
