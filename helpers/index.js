@@ -116,14 +116,18 @@ module.exports = function(config){
         return deferred.promise;
     }
 
+    function getTokenFromRequest(request){
+        let tokenpayload = request.get("Authorization");
+        let token = tokenpayload && tokenpayload.indexOf("Bearer ") !== -1 ? tokenpayload.split("Bearer ")[1] : null;
+        console.log("Authorization header token", token);
+        return token;
+    }
+
     function protect(permissions){ // middleware for protecting resource
 
         return function(request, response, next){ // get token from auth header
-            let tokenpayload = request.get("Authorization");
-
-            let token = tokenpayload && tokenpayload.indexOf("Bearer ") !== -1 ? tokenpayload.split("Bearer ")[1] : null;
-
-            console.log("Authorization header token", token);
+            
+            let token  = getTokenFromRequest(request);
 
             if(token){
                 isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
@@ -151,6 +155,7 @@ module.exports = function(config){
         login: login,
         getUserInfo: getUserInfo,
         isUserAuthorised: isUserAuthorised,
+        getTokenFromRequest: getTokenFromRequest,
         protect: protect
     }
 }
