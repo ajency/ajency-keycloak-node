@@ -69,6 +69,23 @@ module.exports = {
             })
         return deferred.promise;
     },
+    getUserInfo(accesstoken){
+        let deferred = q.defer();
+        this.getEndpointConfig()
+            .then(function(){
+                keycloakapis.userinfoApi(accesstoken)
+                            .then(function(result){
+                                deferred.resolve(result.body);
+                            })
+                            .catch(function(err){
+                                deferred.reject(err);
+                            });
+            })
+            .catch(function(err){
+                deferred.reject(err);
+            });
+        deferred.promise;
+    },
     isUserAuthorised(usertoken, permissions, method){
         // TBD format the permissions passed in by user;
         let entitlements = {
