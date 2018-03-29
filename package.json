@@ -1,6 +1,6 @@
 {
   "name": "@ajency/keycloak-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "mocha": "^5.0.4"
   },
   "dependencies": {
+    "jsonwebtoken": "^8.2.0",
     "q": "^1.5.1",
     "request": "^2.85.0",
     "should": "^13.2.1"

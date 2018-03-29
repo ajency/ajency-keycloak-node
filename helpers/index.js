@@ -74,21 +74,13 @@ module.exports = function(config){
     }
 
     function getUserInfo(accesstoken){
-        let deferred = q.defer();
-        getEndpointConfig()
-            .then(function(){
-                keycloakapis.userinfoApi(accesstoken)
-                            .then(function(result){
-                                deferred.resolve(result.body);
-                            })
-                            .catch(function(err){
-                                deferred.reject(err);
-                            });
-            })
-            .catch(function(err){
-                deferred.reject(err);
-            });
-        return deferred.promise;
+        try{
+            return utils.jwt.decode(accesstoken);
+        }
+        catch(e){
+            return "Invalid jwt";
+        }
+
     }
 
     function isUserAuthorised(usertoken, permissions, method){

@@ -1,5 +1,6 @@
 const request = require("request");
 const q = require("q");
+const jwt = require("jsonwebtoken");
 
 module.exports = function(){
     var makeRequest = function(url, method, body, headers, bodytype){
@@ -50,6 +51,7 @@ module.exports = function(){
     var utils = {
         request: request,
         q: q,
+        jwt: jwt,
         makeRequest: makeRequest,
         validateConfig: validateConfig
     };
