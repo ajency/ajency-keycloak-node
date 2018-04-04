@@ -1,7 +1,7 @@
 Ajency keycloak auth utility
 =========
 
-A small library that supports authentication for Keycloak.
+A small node library that supports authentication for Keycloak which can be used with higher abstraction level frameworks like express.
 
 ## Installation
 
