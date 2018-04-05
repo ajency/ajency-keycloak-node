@@ -20,7 +20,7 @@ module.exports = function(config){
             }
 
             if(!config["resource"]){
-                console.log("'resource' key missing");
+                console.warn("'resource' key missing");
                 return false;
             }
 
@@ -43,7 +43,7 @@ module.exports = function(config){
                 deferred.resolve(global.ENDPOINTCONFIG);
             })
             .catch(function(err){
-                console.warn("endpoints error:",res.body);
+                console.warn("kc endpoints error:",res.body);
                 deferred.reject(err);
             });
         }
@@ -59,11 +59,9 @@ module.exports = function(config){
             .then(function(){
                 keycloakapis.loginApi(user, pass)
                 .then(function(res){
-                    // console.log("test login success");
                     deferred.resolve(res);
                 })
                 .catch(function(err){
-                    console.log("test login error");
                     deferred.reject(err);
                 });
             })
@@ -88,13 +86,12 @@ module.exports = function(config){
         let entitlements = {
             permissions: permissions
         }
-        console.log("entitlements:", entitlements);
+
         let deferred = q.defer();
         getEndpointConfig()
             .then(function(res){
                 keycloakapis.entitlementsApi(usertoken, entitlements, method)
                 .then(function(result){
-                    // console.log("isAuthorized: ", result);
                     deferred.resolve(true);
                 })
                 .catch(function(err){
@@ -111,7 +108,6 @@ module.exports = function(config){
     function getTokenFromRequest(request){
         let tokenpayload = request.get("Authorization");
         let token = tokenpayload && tokenpayload.indexOf("Bearer ") !== -1 ? tokenpayload.split("Bearer ")[1] : null;
-        console.log("Authorization header token", token);
         return token;
     }
 

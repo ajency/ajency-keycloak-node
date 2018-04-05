@@ -14,7 +14,6 @@ module.exports = function(){
                 headers: headers || null
             };
 
-            // console.log("options", options);
             request(options,function(err, response, body){
                 if(err){
                     deferred.reject(err);
