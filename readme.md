@@ -5,7 +5,7 @@ A small node library that supports authentication for Keycloak which can be used
 
 ## Installation
 
-  `npm install --save git+https://github.com/ajency/ajency-keycloak-node.git`
+  `npm install --save ajency-keycloak-node`
 
 ## Basic Usage
 
