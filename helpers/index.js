@@ -8,6 +8,9 @@ const q = utils.q;
 
 module.exports = function(config){
     function init(config){
+
+        config = getConfig(config);
+
         if(config && Object.keys(config).length > 0){
             if(!config["auth-server-url"]){
                 console.warn("'auth-server-url' key missing");
@@ -237,6 +240,46 @@ module.exports = function(config){
         }
     }
 
+    function getConfig(config){
+        if(typeof config === 'object'){
+            return config;
+        }
+        else if(typeof config === 'string'){
+
+            var httpprotocolindex = config.search(/^http[s]?:\/\//);
+            if(httpprotocolindex === 0){
+                // do ajax call to get json
+
+                // return utils.makeRequest(config)
+                //     .then(function(data){
+                //         var json = JSON.parse(data.body);
+                //         callback(json);
+                //     })
+                //     .catch(function(err){
+                //         callback(null);
+                //     });
+
+                return null;
+            }
+            else if(httpprotocolindex === -1){
+                // perform a relative require here
+                try{
+                    var parsedconfig = JSON.parse(config);
+                    return parsedconfig;
+                }
+                catch(e){
+                    var kcjson = require('../../../' + config);
+                    return kcjson;
+                }
+            }
+            else{
+                console.warn("invalid keycloak json file url format");
+                return null;
+            }
+           
+        }
+    }
+
     if(config)
         init(config);
 
@@ -249,6 +292,7 @@ module.exports = function(config){
         getTokenFromRequest: getTokenFromRequest,
         protect: protect,
         getUserPermissions: getUserPermissions,
-        hasAccess: hasAccess
+        hasAccess: hasAccess,
+        getConfig: getConfig
     }
 }
