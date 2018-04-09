@@ -241,6 +241,7 @@ module.exports = function(config){
     }
 
     function getConfig(config){
+
         if(typeof config === 'object'){
             return config;
         }
@@ -268,7 +269,8 @@ module.exports = function(config){
                     return parsedconfig;
                 }
                 catch(e){
-                    var kcjson = require('../../../' + config);
+                    var path = process.cwd() + '/' + config;
+                    var kcjson = require(path);
                     return kcjson;
                 }
             }
