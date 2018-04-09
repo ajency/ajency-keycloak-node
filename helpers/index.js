@@ -76,7 +76,7 @@ module.exports = function(config){
             return utils.jwt.decode(accesstoken);
         }
         catch(e){
-            return "Invalid jwt";
+            return "Invalid token";
         }
 
     }
@@ -92,7 +92,7 @@ module.exports = function(config){
             .then(function(res){
                 keycloakapis.entitlementsApi(usertoken, entitlements, method)
                 .then(function(result){
-                    deferred.resolve(true);
+                    deferred.resolve(result);
                 })
                 .catch(function(err){
                     console.warn("isUserAuthorised error");
@@ -114,23 +114,126 @@ module.exports = function(config){
     function protect(permissions){ // middleware for protecting resource
 
         return function(request, response, next){ // get token from auth header
-            
-            let token  = getTokenFromRequest(request);
 
-            if(token){
-                isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
-                .then(function(result){
-                    next();
-                })
-                .catch(function(err){
-                    response.status(401).json({message: "Unauthorized request"});
-                });
+                let token  = getTokenFromRequest(request);
+
+                if(token){
+                    isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
+                    .then(function(result){
+                        response.locals.userpermissions = getUserPermissions(result.body);
+                        next();
+                    })
+                    .catch(function(err){
+                        response.status(401).json({message: "Unauthorized request"});
+                    });
+                }
+                else{
+                    response.status(400).json({message: "Bad request"});
+                }
+        }
+    }
+
+    function getUserPermissions(jsonbody){
+        try{
+            if(jsonbody){
+                var resultjson = typeof jsonbody === 'string' ? JSON.parse(jsonbody) : jsonbody;
+   
+                if(resultjson.rpt){
+                    var decodedrpt = utils.jwt.decode(resultjson.rpt);
+
+                    if(typeof decodedrpt === 'object'){
+                        return decodedrpt;
+                    }
+                    else{
+                        return null;
+                    }
+                }
+                else{
+                    return null;
+                }
             }
             else{
-                response.status(400).json({message: "Bad request"});
+                return null;
             }
+        }
+        catch(e){
+            console.warn("rpt fetch error: ", e);
+            return null;
+        }
+    }
 
+    function hasAccess(permissions, response){ // to be used within controller
 
+        if(response.locals && response.locals.userpermissions){
+            var decoded_rpt = response.locals.userpermissions;
+            if(permissions && permissions.length){
+                if(decoded_rpt && decoded_rpt.authorization && decoded_rpt.authorization.permissions && decoded_rpt.authorization.permissions.length){
+                    // check for permissions here
+                    var rpt_permissions = decoded_rpt.authorization.permissions;
+    
+                    var permission_status = true;
+                    rpt_permissions.map(function(rpt_perm){
+                        var req_perm = permissions.find(function(perm){
+                            return perm.resource_set_name === rpt_perm.resource_set_name;
+                        });
+    
+                        if(req_perm){
+    
+                            if(req_perm.scopes && rpt_perm.scopes){
+                                var scopematch = true;
+                                req_perm.scopes.map(function(reqscope){
+                                    var found = rpt_perm.scopes.some(function(resscope){
+                                        return reqscope === resscope;
+                                    });
+    
+                                    if(!found)
+                                        scopematch = false;
+    
+                                });
+        
+                                if(!scopematch){
+                                    console.warn("missing scope match for ", rpt_perm.resource_set_name);
+                                    permission_status = scopematch;
+                                    return permission_status;
+                                }
+    
+                            }
+                            else{
+                                if(!req_perm.scopes && !rpt_perm.scopes){
+                                    console.warn("no scopes present");
+                                    return true;
+                                }
+                                else{
+                                    console.warn("scopes mismatch");
+                                    permission_status = false;
+                                    return permission_status;
+                                }
+    
+                            }
+        
+                        }
+                        else{
+                            console.warn(rpt_perm.resource_set_name + " not present");
+                            permission_status = false;
+                            return permission_status;
+                        }
+                    }); // end rpt_permissions map 
+    
+                    console.log("permissions status: ", permission_status);
+                    return permission_status;
+                }
+                else{
+                    console.warn("no permissions in rpt");
+                    return false;
+                }
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            console.warn("no locals present")
+            return false;
         }
     }
 
@@ -144,6 +247,8 @@ module.exports = function(config){
         getUserInfo: getUserInfo,
         isUserAuthorised: isUserAuthorised,
         getTokenFromRequest: getTokenFromRequest,
-        protect: protect
+        protect: protect,
+        getUserPermissions: getUserPermissions,
+        hasAccess: hasAccess
     }
 }
