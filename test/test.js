@@ -26,8 +26,8 @@ describe('#ajencykeycloak', function() {
     });
 
     it('should accept a config as a relative url', function(){
-        var result = ajencykeycloak.getConfig('keycloak.json');
-        expect(result).to.have.property('url');
+        var result = ajencykeycloak.getConfig('dummykeykloak.json');
+        expect(result).to.have.property('auth-server-url');
     });
 
     // it('should accept a config as a remote url', function(){
@@ -56,18 +56,20 @@ describe('#ajencykeycloak', function() {
         expect(typeof result).to.equal(typeof {});
     });
 
-    // it('should check if user is authorized to access a resource', function(done){
-    //     var permissions = [
-    //         {
-    //             "resource_set_name" : "res:lead",
-    //             // "scopes":["scopes:view"]
-    //         }
-    //     ]
+    it('should check if user is authorized to access a resource', function(done){
+        // var permissions = [
+        //     {
+        //         "resource_set_name" : "res:lead",
+        //         // "scopes":["scopes:view"]
+        //     }
+        // ]
 
-    //     ajencykeycloak.isUserAuthorised("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI1clY3czA5QTBrcmxVWldBTU5SSnNHWVVFUm5EbW5lU1M4WjJGSk43ZHE4In0.eyJqdGkiOiI5OGE0MWRhOS01Mjg1LTQyYzQtYjhlMC1hZTZkOWE0NDU3Y2EiLCJleHAiOjE1MjExODYzNzIsIm5iZiI6MCwiaWF0IjoxNTIxMTg2MDcyLCJpc3MiOiJodHRwOi8va2V5Y2xvYWtzZXJ2ZXIuYWplbmN5LmluL2F1dGgvcmVhbG1zL0dvb21vVGVzdCIsImF1ZCI6IkxNUy1iYWNrZW5kLU5vZGUiLCJzdWIiOiI1NWZmOWM4My0xZjM2LTRlZmItODFlNS02MjBlMTRhN2JlNTAiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJMTVMtYmFja2VuZC1Ob2RlIiwiYXV0aF90aW1lIjoxNTIxMTg1Njk3LCJzZXNzaW9uX3N0YXRlIjoiMmZkMThmMzMtNTUwNC00YzZkLTlkMDYtMmRlMzc1NDYxZjg4IiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjMxMDAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiTE1TLWJhY2tlbmQtTm9kZSI6eyJyb2xlcyI6WyJBZG1pbiJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IkN5cnVzIEYuIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiY3lydXMiLCJnaXZlbl9uYW1lIjoiQ3lydXMiLCJmYW1pbHlfbmFtZSI6IkYuIiwiZW1haWwiOiJjeXJ1c0BhamVuY3kuaW4ifQ.T4wepkJ7VV1taD6kcY67M6a-pEIdO4s4ETGPSs2fyBSmsv_WvNB8bvl_ZvBeXERQGMrh0m_AW9WR5DLtdM_St3WZtecxfiQfCRfLzRVGbwhMiN3qZjsc4vpoeKoOXW6UcODmiI08PssBnQmK9QIiELUeFZEYCvhgXm7TEyMgCtzivbHjUAkbVctD6F7t5I9GlxmbVleblD2UJUon3Ru43Di1oCdF-_3CKVzbAq_qWqMYFi0BDEC8Pm29NfPHm3oIjI2AA82h3kN4n6ofWr7cZnLl3BtLYcxO1H65U5A95iQyJGDgsbhFvTmpAidWt_2raDHLN9Nk2JJcnEFYqw10oQ", permissions)
-    //                 .then(function(result){
-    //                     expect(result).to.equal(true);
-    //                 })
-    //                 .finally(done);
-    // });
+        var permissions = null;
+
+        ajencykeycloak.isUserAuthorised("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKT3lwQ3A5OEIxWlI5SFhtS2Via2ZTWTZqeDVFM3VqWHhfWmloNGRUX3AwIn0.eyJqdGkiOiI0ZmRiZTlkYi1kNDg5LTQ5OTctYTRkMi01M2E4M2IyY2I5M2UiLCJleHAiOjE1MjM1MzgxMDcsIm5iZiI6MCwiaWF0IjoxNTIzNTM3ODA3LCJpc3MiOiJodHRwOi8va2V5Y2xvYWtzZXJ2ZXIuYWplbmN5LmluL2F1dGgvcmVhbG1zL0dvb21vTG9jYWwiLCJhdWQiOiJsbXMtd2ViYXBwIiwic3ViIjoiYzI3YTYxN2QtZjg5ZS00NjI2LTkxMTUtYzdiOWMxM2U2MDU0IiwidHlwIjoiQmVhcmVyIiwiYXpwIjoibG1zLXdlYmFwcCIsIm5vbmNlIjoiYzZkY2ZjZjYtZDdhMy00NmFhLTg1NWItMDZiZjYyMTU4MmNjIiwiYXV0aF90aW1lIjoxNTIzNTM3ODA1LCJzZXNzaW9uX3N0YXRlIjoiMzllODUxNjEtODVkZS00ZGY3LWExMGItMjA2ZTBkYzczNWMzIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwOi8vbG9jYWxob3N0OjkwMDAiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsibG1zLXdlYmFwcCI6eyJyb2xlcyI6WyJBZG1pbiJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwibmFtZSI6IlNyaWRhcmEgQWRtaW4gQWRtaW4iLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJiY19zcmlkaGFyQHlhaG9vLmNvbSIsImdpdmVuX25hbWUiOiJTcmlkYXJhIEFkbWluIiwiZmFtaWx5X25hbWUiOiJBZG1pbiIsImVtYWlsIjoiYmNfc3JpZGhhckB5YWhvby5jb20iLCJncm91cC1tZW1iZXJzaGlwIjpbIi9Hb29tbyBPcGVyYXRpb25zIiwiL0ZpbmFuY2UiLCIvQjJCIiwiL1JldGFpbCBicmFuY2giLCIvQ2FsbCBDZW50ZXIiXX0.FuhefJOqQ0ucl58sNHVa469amQFlb1SkuV5r91NvelNlRSwmFvzW18LQ-3AjjS6QvSQWqDII2IieRqQpVsNmg7v9GYOA4qK-wrMh7fPyyv-JsvX8BWTZmbqgTasrSlDObOltQuLjNs___vUwEoYT7NuWmXlvdyfisVrd7z5YAp7v8dWk1MRZ9VTWAJ5ULt9k3ah4NT91h9tO6AWWlcFE-_z25yjxWFY-lA3GPUE9VXYdLKI47-Rodji2r7wJMrTx9lYuwPAImQgvAA015nUg6_RZLVwNmlRtosJpBFQmxGVZGUKg0l9lT3eCsENxkEkrKHVgOh9Z5zT_1mo3v3rTgQ", permissions, 'post')
+                    .then(function(result){
+                        expect(result).to.equal(true);
+                    })
+                    .finally(done);
+    });
 });

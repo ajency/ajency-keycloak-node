@@ -93,14 +93,35 @@ module.exports = function(config){
         let deferred = q.defer();
         getEndpointConfig()
             .then(function(res){
-                keycloakapis.entitlementsApi(usertoken, entitlements, method)
-                .then(function(result){
-                    deferred.resolve(result);
-                })
-                .catch(function(err){
-                    console.warn("isUserAuthorised error");
-                    deferred.reject(false);
-                });
+                if(permissions && permissions.length){
+                    keycloakapis.entitlementsApi(usertoken, entitlements, method)
+                    .then(function(result){
+                        deferred.resolve(result);
+                    })
+                    .catch(function(err){
+                        console.warn("isUserAuthorised error");
+                        deferred.reject(false);
+                    });
+                }
+                else{
+                    // validate the access token
+                    keycloakapis.introspectionApi(usertoken, 'access_token')
+                        .then(function(result){
+                            let body = JSON.parse(result.body);
+                            if(body && body.active === false){
+                                console.log("introspect invalid")
+                                deferred.reject(false);
+                            }
+                            else{
+                                console.log("introspect success");
+                                deferred.resolve(result);
+                            }
+                        })
+                        .catch(function(err){
+                            console.warn("introspection error");
+                            deferred.reject(false);
+                        })
+                }
             })
             .catch(function(err){
                 deferred.reject(err);
