@@ -15,6 +15,26 @@ describe('#ajencykeycloak', function() {
         expect(result).to.equal(true);
     });
 
+    it('should accept a config as an object', function(){
+        var result = ajencykeycloak.getConfig({"url": "test"});
+        expect(result).to.have.property('url');
+    });
+
+    it('should accept a config as a json string', function(){
+        var result = ajencykeycloak.getConfig('{"url": "test"}');
+        expect(result).to.have.property('url');
+    });
+
+    it('should accept a config as a relative url', function(){
+        var result = ajencykeycloak.getConfig('keycloak.json');
+        expect(result).to.have.property('url');
+    });
+
+    // it('should accept a config as a remote url', function(){
+    //     var result = ajencykeycloak.getConfig('http://localhost:5000/keycloak.json');
+    //     expect(result).to.have.property('url');
+    // });
+    
     it('should discovery keycloak specify endpoints', function(done){
             ajencykeycloak.getEndpointConfig()
             .then(function(res){
@@ -31,12 +51,9 @@ describe('#ajencykeycloak', function() {
             .finally(done);
     });
 
-    it('should get user info for token', function(done){
-        ajencykeycloak.getUserInfo("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJvUXFyWWZITmNJejFabDlxbzVCdWUyMzYwdnI4eFQybjdTeWdFelFRZVFjIn0.eyJqdGkiOiJlY2RhMjc3NC0xYTM2LTQzOTEtOTljMi0wYTZkYWYwMWE4OWIiLCJleHAiOjE1MjIyMzUzNDIsIm5iZiI6MCwiaWF0IjoxNTIyMjM1MDQyLCJpc3MiOiJodHRwOi8va2V5Y2xvYWsuZ29vbW8udGVhbS9hdXRoL3JlYWxtcy9Hb29tb0xvY2FsIiwiYXVkIjoibG1zLXdlYmFwcCIsInN1YiI6Ijk2MmFiYzFkLTc1ZDAtNDIxYy1hZmYwLTlhMDQ3YjMyOTk5ZCIsInR5cCI6IkJlYXJlciIsImF6cCI6Imxtcy13ZWJhcHAiLCJub25jZSI6IjA4OWY1NzExLWFlODUtNDdjMi1hZmVjLWExNjY3M2Y4ODJkYSIsImF1dGhfdGltZSI6MTUyMjIzNTA0MCwic2Vzc2lvbl9zdGF0ZSI6ImUyMzM5Y2JjLTQzZDgtNDhiMy1iNTcwLTdlMDcwZDhkMWFiNyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo5MDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Imxtcy13ZWJhcHAiOnsicm9sZXMiOlsiQWRtaW4iXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sIm5hbWUiOiJTcmlkYXJhIEFkbWluIEFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYmNfc3JpZGhhckB5YWhvby5jb20iLCJnaXZlbl9uYW1lIjoiU3JpZGFyYSBBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImJjX3NyaWRoYXJAeWFob28uY29tIn0.aK6OmFDlv3auuTXNUA-Xoc6-fPDnNvf_1aUArWgPDqm0qphueF9cmjw4_jaXUzZepBvhoya6RwnetchvsATqoNEFs2ElefuMW_S3v3edr8RhbbV_WlJnQAeNs4Lj9NjH14O1WN4T6oX7lSlibwvu5yCPcKUsxgOJreMJNQs2494pE9gBEQU6HmMKyXqYD6sLG4OpiaWGCZHZVEHZFs3C3uf1hStFsEQLZuNCtNpB0LYapb7iwP_JcxGt3uqQyNRFg9CBojD6b-BDMpYYbPhIURv1L0iT2jIMf84pZiRDPLXpeEcszUOFYSO1lkvT0rA0_Xe18IbS1tiKqKDh30KykA")
-                    .then(function(){
-
-                    })
-                    .finally(done);
+    it('should get user info for token', function(){
+        var result = ajencykeycloak.getUserInfo("eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJvUXFyWWZITmNJejFabDlxbzVCdWUyMzYwdnI4eFQybjdTeWdFelFRZVFjIn0.eyJqdGkiOiJlY2RhMjc3NC0xYTM2LTQzOTEtOTljMi0wYTZkYWYwMWE4OWIiLCJleHAiOjE1MjIyMzUzNDIsIm5iZiI6MCwiaWF0IjoxNTIyMjM1MDQyLCJpc3MiOiJodHRwOi8va2V5Y2xvYWsuZ29vbW8udGVhbS9hdXRoL3JlYWxtcy9Hb29tb0xvY2FsIiwiYXVkIjoibG1zLXdlYmFwcCIsInN1YiI6Ijk2MmFiYzFkLTc1ZDAtNDIxYy1hZmYwLTlhMDQ3YjMyOTk5ZCIsInR5cCI6IkJlYXJlciIsImF6cCI6Imxtcy13ZWJhcHAiLCJub25jZSI6IjA4OWY1NzExLWFlODUtNDdjMi1hZmVjLWExNjY3M2Y4ODJkYSIsImF1dGhfdGltZSI6MTUyMjIzNTA0MCwic2Vzc2lvbl9zdGF0ZSI6ImUyMzM5Y2JjLTQzZDgtNDhiMy1iNTcwLTdlMDcwZDhkMWFiNyIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL2xvY2FsaG9zdDo5MDAwIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ1bWFfYXV0aG9yaXphdGlvbiJdfSwicmVzb3VyY2VfYWNjZXNzIjp7Imxtcy13ZWJhcHAiOnsicm9sZXMiOlsiQWRtaW4iXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sIm5hbWUiOiJTcmlkYXJhIEFkbWluIEFkbWluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiYmNfc3JpZGhhckB5YWhvby5jb20iLCJnaXZlbl9uYW1lIjoiU3JpZGFyYSBBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImJjX3NyaWRoYXJAeWFob28uY29tIn0.aK6OmFDlv3auuTXNUA-Xoc6-fPDnNvf_1aUArWgPDqm0qphueF9cmjw4_jaXUzZepBvhoya6RwnetchvsATqoNEFs2ElefuMW_S3v3edr8RhbbV_WlJnQAeNs4Lj9NjH14O1WN4T6oX7lSlibwvu5yCPcKUsxgOJreMJNQs2494pE9gBEQU6HmMKyXqYD6sLG4OpiaWGCZHZVEHZFs3C3uf1hStFsEQLZuNCtNpB0LYapb7iwP_JcxGt3uqQyNRFg9CBojD6b-BDMpYYbPhIURv1L0iT2jIMf84pZiRDPLXpeEcszUOFYSO1lkvT0rA0_Xe18IbS1tiKqKDh30KykA")
+        expect(typeof result).to.equal(typeof {});
     });
 
     // it('should check if user is authorized to access a resource', function(done){
