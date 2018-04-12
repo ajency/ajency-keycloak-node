@@ -10,10 +10,8 @@ A small node library that supports authentication for Keycloak which can be used
 ## Basic Usage
 
 ```
-  const keycloakConfig = require('./keycloak.json'); // your keycloak configuration file
-  const ajauth = require('@ajency-keycloak/node');
 
-  ajauth.init(keycloakConfig);
+  const ajauth = require('@ajency-keycloak/node')('keycloak.json'); // pass in your keycloak configuration file path (only paths relative to project root are valid)
 
   var permissions = [ // your resource and scope premissions
           {
