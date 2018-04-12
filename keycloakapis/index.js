@@ -136,7 +136,7 @@ module.exports = {
 
             let base64clientcredentials = Buffer.from(INSTALLCONFIG['resource'] + ":" + INSTALLCONFIG['credentials']['secret']).toString('base64'); // added credentials here
             
-            console.log("base64clientcredentials:",base64clientcredentials);
+            // console.log("base64clientcredentials:",base64clientcredentials);
             headers = {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': 'Basic ' + base64clientcredentials
