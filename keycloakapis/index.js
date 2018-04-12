@@ -126,5 +126,37 @@ module.exports = {
 
 
         return deferred.promise;
+    },
+    introspectionApi(token, type){
+        let deferred = q.defer();
+
+        utils.validateConfig(function(){
+
+            let url = ENDPOINTCONFIG['token_introspection_endpoint'];
+
+            let base64clientcredentials = Buffer.from(INSTALLCONFIG['resource'] + ":" + INSTALLCONFIG['credentials']['secret']).toString('base64'); // added credentials here
+            
+            console.log("base64clientcredentials:",base64clientcredentials);
+            headers = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + base64clientcredentials
+            };
+
+            let body = "token_type_hint=" + type
+                        + "&token=" + token;
+
+            utils.makeRequest(url, "POST", body, headers)
+                .then(function(data){
+                    deferred.resolve(data);
+                })
+                .catch(function(err){
+                    deferred.reject(err);
+                });
+
+        }, deferred, "Missing config for entitlement");
+
+
+
+        return deferred.promise;
     }
 }
