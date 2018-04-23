@@ -148,7 +148,7 @@ module.exports = function(config){
                         next();
                     })
                     .catch(function(err){
-                        response.status(401).json({message: "Unauthorized request"});
+                        response.status(401).json({message: "Unauthorized request <a href='#/logout'>Login with another account</a>"});
                     });
                 }
                 else{
