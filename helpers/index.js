@@ -9,8 +9,9 @@ const q = utils.q;
 module.exports = function(config){
     var _decoded_rpt = null;
 
-    function getUserRoles(accesstoken){
-        if(accesstoken){
+    function getUserRoles(request){
+        if(request){
+            var accesstoken = getTokenFromRequest(request);
             var userinfo = getUserInfo(accesstoken);
             if(userinfo.resource_access){
                 return JSON.parse(JSON.stringify(userinfo.resource_access));
@@ -32,8 +33,9 @@ module.exports = function(config){
 
     }
 
-    function getUserMembership(accesstoken){
-        if(accesstoken){
+    function getUserGroupMembership(request){
+        if(request){
+            var accesstoken = getTokenFromRequest(request);
             var userinfo = getUserInfo(accesstoken);
             if(userinfo["group-membership"]){
                 return JSON.parse(JSON.stringify(userinfo["group-membership"]));
@@ -120,8 +122,9 @@ module.exports = function(config){
         return deferred.promise;
     }
 
-    function getUserInfo(accesstoken){
+    function getUserInfo(request){
         try{
+            var accesstoken = getTokenFromRequest(request);
             return utils.jwt.decode(accesstoken);
         }
         catch(e){
