@@ -11,8 +11,7 @@ module.exports = function(config){
 
     function getUserRoles(request){
         if(request){
-            var accesstoken = getTokenFromRequest(request);
-            var userinfo = getUserInfo(accesstoken);
+            var userinfo = getUserInfo(request);
             if(userinfo.resource_access){
                 return JSON.parse(JSON.stringify(userinfo.resource_access));
             }
@@ -35,8 +34,7 @@ module.exports = function(config){
 
     function getUserGroupMembership(request){
         if(request){
-            var accesstoken = getTokenFromRequest(request);
-            var userinfo = getUserInfo(accesstoken);
+            var userinfo = getUserInfo(request);
             if(userinfo["group-membership"]){
                 return JSON.parse(JSON.stringify(userinfo["group-membership"]));
             }
