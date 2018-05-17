@@ -9,6 +9,93 @@ const q = utils.q;
 module.exports = function(config){
     var _decoded_rpt = null;
 
+    function userBelongsToRoles(request, req_roles){
+        if(request && req_roles){
+            var roles = getUserRoles(request);
+
+            if(roles){
+                if(typeof req_roles === 'string'){
+                    var present = roles.some(function(role){
+                        return role === req_roles;
+                    });
+
+                    return present;
+                }
+                else if(typeof req_roles === 'object' && req_roles.length){
+                    var roleresponse = {};
+
+                    req_roles.map(function(req_role){
+                        var rolefound = roles.find(function(role){
+                            return role === req_role;
+                        });
+
+                        if(rolefound){
+                            roleresponse[req_role] = true;
+                        }
+                        else{
+                            roleresponse[req_role] = false;
+                        }
+                    });
+
+                    return roleresponse;
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
+
+        }
+        else{
+            return null;
+        }
+    }
+
+    function userBelongsToGroups(request, req_groups){
+        if(request && req_groups){
+            var groups = getUserGroupMembership(request);
+
+            if(groups){
+                if(typeof req_groups === 'string'){
+                    var present = groups.some(function(group){
+                        return group === req_groups;
+                    });
+
+                    return present;
+                }
+                else if(typeof req_groups === 'object' && req_groups.length){
+                    var group_present = {};
+
+                    req_groups.map(function(req_group){
+                        var groupfound = groups.find(function(group){
+                            return group === req_group;
+                        });
+
+                        if(groupfound){
+                            group_present[req_group] = true;
+                        }
+                        else{
+                            group_present[req_group] = false;
+                        }
+                    });
+
+                    return group_present;
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
     function getUserRoles(request){
         if(request){
             var userinfo = getUserInfo(request);
@@ -367,6 +454,8 @@ module.exports = function(config){
         hasAccess: hasAccess,
         getConfig: getConfig,
         getUserRoles: getUserRoles,
-        getUserGroupMembership: getUserGroupMembership
+        getUserGroupMembership: getUserGroupMembership,
+        userBelongsToRoles: userBelongsToRoles,
+        userBelongsToGroups: userBelongsToGroups
     }
 }
