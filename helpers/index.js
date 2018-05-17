@@ -369,6 +369,6 @@ module.exports = function(config){
         hasAccess: hasAccess,
         getConfig: getConfig,
         getUserRoles: getUserRoles,
-        getUserMembership: getUserMembership
+        getUserGroupMembership: getUserGroupMembership
     }
 }
