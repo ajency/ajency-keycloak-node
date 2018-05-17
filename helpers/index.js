@@ -11,7 +11,7 @@ module.exports = function(config){
 
     function getUserRoles(){
         if(_decoded_rpt && _decoded_rpt.resource_access && typeof _decoded_rpt.resource_access === 'object'){
-            return JSON.parse(JON.stringify(_decoded_rpt.resource_access));
+            return JSON.parse(JSON.stringify(_decoded_rpt.resource_access));
         }
         else{
             return null;
@@ -19,8 +19,8 @@ module.exports = function(config){
     }
 
     function getUserMembership(){
-        if(decoded_rpt && _decoded_rpt["group-membership"] && typeof _decoded_rpt["group-membership"] === 'object'){
-            return JSON.parse(JON.stringify(_decoded_rpt["group-membership"]));
+        if(_decoded_rpt && _decoded_rpt["group-membership"] && typeof _decoded_rpt["group-membership"] === 'object'){
+            return JSON.parse(JSON.stringify(_decoded_rpt["group-membership"]));
         }
         else{
             return null;
