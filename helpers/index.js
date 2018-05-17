@@ -7,6 +7,26 @@ global.ENDPOINTCONFIG = null;
 const q = utils.q;
 
 module.exports = function(config){
+    var _decoded_rpt = null;
+
+    function getUserRoles(){
+        if(_decoded_rpt && _decoded_rpt.resource_access && typeof _decoded_rpt.resource_access === 'object'){
+            return JSON.parse(JON.stringify(_decoded_rpt.resource_access));
+        }
+        else{
+            return null;
+        }
+    }
+
+    function getUserMembership(){
+        if(decoded_rpt && _decoded_rpt["group-membership"] && typeof _decoded_rpt["group-membership"] === 'object'){
+            return JSON.parse(JON.stringify(_decoded_rpt["group-membership"]));
+        }
+        else{
+            return null;
+        }
+    }
+
     function init(config){
 
         config = getConfig(config);
@@ -144,7 +164,9 @@ module.exports = function(config){
                 if(token){
                     isUserAuthorised( token, permissions, permissions && permissions.length ? 'post' : 'get')
                     .then(function(result){
-                        response.locals.userpermissions = getUserPermissions(result.body);
+                        _decoded_rpt = response.locals.userpermissions = getUserPermissions(result.body);
+                        // var util = require("util");
+                        // console.log("_decoded_rpt",util.inspect(_decoded_rpt, {showHidden: false, depth: null}));
                         next();
                     })
                     .catch(function(err){
@@ -316,6 +338,8 @@ module.exports = function(config){
         protect: protect,
         getUserPermissions: getUserPermissions,
         hasAccess: hasAccess,
-        getConfig: getConfig
+        getConfig: getConfig,
+        getUserRoles: getUserRoles,
+        getUserMembership: getUserMembership
     }
 }

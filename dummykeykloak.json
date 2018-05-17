@@ -1,10 +1,10 @@
 {
-  "realm": "GoomoTest",
-  "auth-server-url": "http://keycloakserver.ajency.in/auth",
+  "realm": "GoomoStaging",
+  "auth-server-url": "https://keycloak.goomo.team/auth",
   "ssl-required": "external",
-  "resource": "LMS-backend-Node",
+  "resource": "lms-service",
   "credentials": {
-    "secret": "9bb13a91-5a3e-4e63-86b3-ac512bcca9f5"
+    "secret": "1b5b94ab-c1f4-468d-934e-e1e18b7d5caf"
   },
   "use-resource-role-mappings": true,
   "confidential-port": 0,
