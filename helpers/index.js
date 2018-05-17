@@ -9,21 +9,47 @@ const q = utils.q;
 module.exports = function(config){
     var _decoded_rpt = null;
 
-    function getUserRoles(){
-        if(_decoded_rpt && _decoded_rpt.resource_access && typeof _decoded_rpt.resource_access === 'object'){
-            return JSON.parse(JSON.stringify(_decoded_rpt.resource_access));
+    function getUserRoles(accesstoken){
+        if(accesstoken){
+            var userinfo = getUserInfo(accesstoken);
+            if(userinfo.resource_access){
+                return JSON.parse(JSON.stringify(userinfo.resource_access));
+            }
+            else{
+                return null;
+            }
+
         }
-        else{
-            return null;
+        else{ // get from saved instance of last rpt
+            if(_decoded_rpt && _decoded_rpt.resource_access && typeof _decoded_rpt.resource_access === 'object'){
+                return JSON.parse(JSON.stringify(_decoded_rpt.resource_access));
+            }
+            else{
+                return null;
+            }
         }
+
+
     }
 
-    function getUserMembership(){
-        if(_decoded_rpt && _decoded_rpt["group-membership"] && typeof _decoded_rpt["group-membership"] === 'object'){
-            return JSON.parse(JSON.stringify(_decoded_rpt["group-membership"]));
+    function getUserMembership(accesstoken){
+        if(accesstoken){
+            var userinfo = getUserInfo(accesstoken);
+            if(userinfo["group-membership"]){
+                return JSON.parse(JSON.stringify(userinfo["group-membership"]));
+            }
+            else{
+                return null;
+            }
+
         }
-        else{
-            return null;
+        else{ // get from saved instance of last rpt
+            if(_decoded_rpt && _decoded_rpt["group-membership"] && typeof _decoded_rpt["group-membership"] === 'object'){
+                return JSON.parse(JSON.stringify(_decoded_rpt["group-membership"]));
+            }
+            else{
+                return null;
+            }
         }
     }
 
