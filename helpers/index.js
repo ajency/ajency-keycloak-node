@@ -10,78 +10,89 @@ module.exports = function(config){
     var _decoded_rpt = null;
 
     function userBelongsToRoles(request, req_roles){
-        if(request && req_roles){
-            var roles = getUserRoles(request);
-
-            if(roles){
-                if(typeof req_roles === 'string'){
-                    var present = roles.some(function(role){
-                        return role === req_roles;
-                    });
-
-                    return present;
-                }
-                else if(typeof req_roles === 'object' && req_roles.length){
-                    var roleresponse = {};
-
-                    req_roles.map(function(req_role){
-                        var rolefound = roles.find(function(role){
-                            return role === req_role;
+        try{
+            if(request && req_roles){
+                var roles = getUserRoles(request);
+    
+                if(roles){
+                    if(typeof req_roles === 'string'){
+                        var present = roles.some(function(role){
+                            return role === req_roles;
                         });
-
-                        if(rolefound){
-                            roleresponse[req_role] = true;
-                        }
-                        else{
-                            roleresponse[req_role] = false;
-                        }
-                    });
-
-                    return roleresponse;
+    
+                        return present;
+                    }
+                    else if(typeof req_roles === 'object' && req_roles.length){
+                        var roleresponse = {};
+    
+                        req_roles.map(function(req_role){
+                            var rolefound = roles.find(function(role){
+                                return role === req_role;
+                            });
+    
+                            if(rolefound){
+                                roleresponse[req_role] = true;
+                            }
+                            else{
+                                roleresponse[req_role] = false;
+                            }
+                        });
+    
+                        return roleresponse;
+                    }
+                    else{
+                        return null;
+                    }
                 }
                 else{
                     return null;
                 }
+    
             }
             else{
                 return null;
             }
-
         }
-        else{
+        catch(e){
             return null;
         }
+
     }
 
     function userBelongsToGroups(request, req_groups){
-        if(request && req_groups){
-            var groups = getUserGroupMembership(request);
-
-            if(groups){
-                if(typeof req_groups === 'string'){
-                    var present = groups.some(function(group){
-                        return group === req_groups;
-                    });
-
-                    return present;
-                }
-                else if(typeof req_groups === 'object' && req_groups.length){
-                    var group_present = {};
-
-                    req_groups.map(function(req_group){
-                        var groupfound = groups.find(function(group){
-                            return group === req_group;
+        try{
+            if(request && req_groups){
+                var groups = getUserGroupMembership(request);
+    
+                if(groups){
+                    if(typeof req_groups === 'string'){
+                        var present = groups.some(function(group){
+                            return group === req_groups;
                         });
-
-                        if(groupfound){
-                            group_present[req_group] = true;
-                        }
-                        else{
-                            group_present[req_group] = false;
-                        }
-                    });
-
-                    return group_present;
+    
+                        return present;
+                    }
+                    else if(typeof req_groups === 'object' && req_groups.length){
+                        var group_present = {};
+    
+                        req_groups.map(function(req_group){
+                            var groupfound = groups.find(function(group){
+                                return group === req_group;
+                            });
+    
+                            if(groupfound){
+                                group_present[req_group] = true;
+                            }
+                            else{
+                                group_present[req_group] = false;
+                            }
+                        });
+    
+                        return group_present;
+                    }
+                    else{
+                        return null;
+                    }
                 }
                 else{
                     return null;
@@ -91,8 +102,25 @@ module.exports = function(config){
                 return null;
             }
         }
-        else{
+        catch(e){
             return null;
+        }
+
+    }
+
+    function get_client_role(resource_access){
+
+        if(INSTALLCONFIG.roles_from_resource){
+            var clientroles = null;
+            for(var index in resource_access){
+                if(index === INSTALLCONFIG.roles_from_resource){
+                    clientroles = resource_access[index];
+                }
+            }
+            return clientroles ? clientroles.roles ? clientroles.roles: clientroles : null;
+        }
+        else{
+            return resource_access;
         }
     }
 
@@ -100,7 +128,7 @@ module.exports = function(config){
         if(request){
             var userinfo = getUserInfo(request);
             if(userinfo.resource_access){
-                return JSON.parse(JSON.stringify(userinfo.resource_access));
+                return get_client_role(JSON.parse(JSON.stringify(userinfo.resource_access)));
             }
             else{
                 return null;
@@ -109,7 +137,7 @@ module.exports = function(config){
         }
         else{ // get from saved instance of last rpt
             if(_decoded_rpt && _decoded_rpt.resource_access && typeof _decoded_rpt.resource_access === 'object'){
-                return JSON.parse(JSON.stringify(_decoded_rpt.resource_access));
+                return get_client_role(JSON.parse(JSON.stringify(userinfo.resource_access)));
             }
             else{
                 return null;
