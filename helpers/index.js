@@ -358,9 +358,9 @@ module.exports = function(config){
                 if(decoded_rpt && decoded_rpt.authorization && decoded_rpt.authorization.permissions && decoded_rpt.authorization.permissions.length){
                     // check for permissions here
                     var rpt_permissions = decoded_rpt.authorization.permissions;
-    
+
                     var permission_status = true;
-                    rpt_permissions.map(function(rpt_perm){
+                    rpt_permissions.some(function(rpt_perm){
                         var req_perm = permissions.find(function(perm){
                             return perm.resource_set_name === rpt_perm.resource_set_name;
                         });
@@ -379,17 +379,15 @@ module.exports = function(config){
     
                                 });
         
-                                if(!scopematch){
-                                    console.warn("missing scope match for ", rpt_perm.resource_set_name);
-                                    permission_status = scopematch;
-                                    return permission_status;
-                                }
-    
+                                permission_status = scopematch;
+                                return permission_status;
+
                             }
                             else{
                                 if(!req_perm.scopes && !rpt_perm.scopes){
                                     console.warn("no scopes present");
-                                    return true;
+                                    permission_status = true;
+                                    return permission_status;
                                 }
                                 else{
                                     console.warn("scopes mismatch");
