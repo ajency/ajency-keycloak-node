@@ -366,7 +366,6 @@ module.exports = function(config){
                         });
     
                         if(req_perm){
-    
                             if(req_perm.scopes && rpt_perm.scopes){
                                 var scopematch = true;
                                 req_perm.scopes.map(function(reqscope){
@@ -383,18 +382,17 @@ module.exports = function(config){
                                 return permission_status;
 
                             }
-                            else{
-                                if(!req_perm.scopes && !rpt_perm.scopes){
-                                    console.warn("no scopes present");
-                                    permission_status = true;
-                                    return permission_status;
-                                }
-                                else{
-                                    console.warn("scopes mismatch");
-                                    permission_status = false;
-                                    return permission_status;
-                                }
-    
+                            else if(!req_perm.scopes && !rpt_perm.scopes){
+                                permission_status = true;
+                                return permission_status;
+                            }
+                            else if(!req_perm.scopes && rpt_perm.scopes){
+                                permission_status = true;
+                                return permission_status;
+                            }
+                            else if(req_perm.scopes && !rpt_perm.scopes){
+                                permission_status = false;
+                                return permission_status;
                             }
         
                         }
