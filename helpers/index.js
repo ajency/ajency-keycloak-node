@@ -64,7 +64,7 @@ module.exports = function(config){
         var group_paths = group_string.split('/');
         if(group_paths.length){
             var lastindex = group_paths.length - 1;
-            group_match_string = group_paths[lastindex].indexOf(group_to_check) === 0 ? group_paths[lastindex]: null;
+            group_match_string = group_paths[lastindex].indexOf(group_to_check) === 0 ? group_string: null;
         }
         return group_match_string;
     }
